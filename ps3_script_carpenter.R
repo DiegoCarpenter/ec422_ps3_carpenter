@@ -127,9 +127,8 @@ retail_ts |>
   ) +
   theme_minimal()
 
-# -----------------------------------------------------------------------------
-# Part 3 – Data Transformations (Logs and Growth Rates)
-# -----------------------------------------------------------------------------
+
+# Part 3 – Data Transformations
 
 # 3.1b Log of gas production
 can_gas <- can_gas |>
