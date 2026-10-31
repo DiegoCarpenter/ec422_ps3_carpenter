@@ -1,11 +1,7 @@
 # =============================================================================
 # EC 422 – Problem Set 3
 # Diego Carpenter
-# Script for Parts 2–5 (run top to bottom from inside the RStudio project)
 # =============================================================================
-
-# One-time setup (run in the Console, NOT in this script):
-# install.packages(c("fpp3", "seasonal", "forecast"))
 
 library(tidyverse)
 
