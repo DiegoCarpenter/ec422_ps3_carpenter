@@ -207,9 +207,9 @@ retail_ts |>
   group_by(series_id) |>
   summarize(sd_growth = sd(growth_mom, na.rm = TRUE))
 
-# -----------------------------------------------------------------------------
+
+
 # Part 4 – Seeing, Decomposing, and Modeling Seasonality
-# -----------------------------------------------------------------------------
 
 # 4.1a Season plot: NSA retail sales
 retail_ts |>
@@ -304,7 +304,7 @@ can_gas_fit |>
 # 4.4b Fitted vs. actual
 can_gas_fit |>
   augment() |>
-  ggplot(aes(x = Month)) +
+  ggplot(aes(x = Month)) + 
   geom_line(aes(y = log_volume, color = "Actual")) +
   geom_line(aes(y = .fitted, color = "Fitted")) +
   labs(title = "Linear Trend + Seasonal Dummies Fit: Canadian Gas Production",
