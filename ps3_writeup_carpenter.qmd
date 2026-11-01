@@ -1,7 +1,7 @@
 ---
 title: "Problem Set 3"
 author: "Diego Carpenter"
-date: today
+date: 10/31/26
 format:
   html:
     toc: true
@@ -11,7 +11,7 @@ execute:
   message: false
 ---
 
-**GitHub repo:** <https://github.com/YOUR-GITHUB-USERNAME/ec422_ps3_carpenter>
+**GitHub repo:** <https://github.com/DiegoCarpenter/ec422_ps3_carpenter.git>
 
 ```{r}
 #| label: setup
@@ -20,7 +20,6 @@ library(fpp3)
 ```
 
 ## Time and Tsibbles
-
 ### The two datasets
 
 ```{r}
@@ -70,11 +69,11 @@ has_gaps(can_gas)
 head(can_gas)
 ```
 
-**retail_ts** holds two monthly series from the U.S. Census Bureau's monthly retail trade survey, downloaded as a CSV from FRED: RSAFS (Advance Retail Sales: Retail Trade and Food Services, seasonally adjusted) and RSAFSNA (the same series, not seasonally adjusted), both in millions of dollars. The sample runs from `r format(min(retail_ts$Month))` to `r format(max(retail_ts$Month))`. The index is `Month` (a `yearmonth`, so the tsibble header shows `[1M]`), and the key is `series_id`, because the two series are stacked in long format. `has_gaps()` returns `FALSE` for both series, so no months are missing.
+**retail_ts** This holds two monthly series data from the U.S. Census Bureau's monthly retail trade survey, both in millions of dollars. The sample runs from `r format(max(retail_ts$Month))` to `r format(max(retail_ts$Month))`
 
-**can_gas** is a working copy of the `canadian_gas` tsibble that comes with fpp3. It holds monthly natural gas production in Canada in billions of cubic meters, from January 1960 to February 2005. Its index is `Month` and the production variable is `Volume`. It holds only one series, so it has no key: `key_vars()` returns an empty result. It also has no gaps.
+**can_gas** This is a working copy of the `canadian_gas` tsibble. It holds monthly natural gas production in Canada in billions of cubic meters from January 1960 to February 2005. 
 
-**2.2a.** When `read_csv()` guessed, `observation_date` came in as class `<`r class(retail_guess$observation_date)[1]`>`. The dates are in ISO-8601 format (YYYY-MM-DD), so readr guessed right this time. I still re-read the file with explicit `col_types` and `na = "."` so the types never depend on readr's guess.
+**2.2a.** When `read_csv()` guessed, `observation_date` came in as class `<`r class(retail_guess$observation_date)[1]`>`. 
 
 ### Working with dates (2.6)
 
@@ -104,9 +103,9 @@ can_gas_recent |>
   head()
 ```
 
-**2.6b.** Since 1990, **`r as.character(monthly_avg$month[which.max(monthly_avg$avg_volume)])`** has the highest average production (`r round(max(monthly_avg$avg_volume), 2)` billion m³), with January almost as high. **`r as.character(monthly_avg$month[which.min(monthly_avg$avg_volume)])`** has the lowest (`r round(min(monthly_avg$avg_volume), 2)` billion m³). So production is highest in winter and lowest in summer.
+**2.6b.** Since 1990, **`r as.character(monthly_avg$month[which.max(monthly_avg$avg_volume)])`** has the highest average production, with January almost as high. **`r as.character(monthly_avg$month[which.min(monthly_avg$avg_volume)])`** has the lowest. So this means production is highest in winter and lowest in summer.
 
-**2.6c.** Because `Month` is a `yearmonth`, `Month + 1` moves forward one month (1990 Jan → 1990 Feb), and `Month - 12` moves back to the same month a year earlier (1990 Jan → 1989 Jan). Adding 1 to an ordinary `Date` would move forward one day instead.
+**2.6c.** Because `Month` is a `yearmonth`, `Month + 1` moves forward one month, and `Month - 12` moves back to the same month a year earlier. Adding 1 to an ordinary `Date` would move forward one day. 
 
 ```{r}
 #| label: quarterly
@@ -125,7 +124,7 @@ can_gas_q |>
   theme_minimal()
 ```
 
-**2.6d.** Gas production is a *flow*: it's the amount produced during each month. A quarter's production is therefore the total of its three months, so we `sum()`. Taking the `mean()` would give average *monthly* production within the quarter, which is still on a monthly scale. Yes, the quarterly series is still clearly seasonal. It has a regular saw-tooth shape, with Q1 and Q4 (winter) high and Q2 and Q3 low, especially between about 1975 and 1990.
+**2.6d.** Gas production is a *flow*. It is the amount produced during each month. A quarter's production is the total of its three months, so you `sum()`. Taking the `mean()` would give average *monthly* production. The quarterly series is still seasonal.
 
 ### Plotting with autoplot() (2.7)
 
@@ -145,7 +144,7 @@ retail_ts |>
   theme_minimal()
 ```
 
-**2.7b.** The NSA series has a sharp spike every December from holiday shopping, then a big drop in January and February. There are smaller bumps during the year too, such as in spring and around back-to-school season. The SA series has none of these repeating spikes and runs smoothly through the middle of the NSA line. Over the long run, though, the two series follow the same path. Both trend upward at the same rate and show the same larger ups and downs, like the 2008–09 recession and the collapse and rebound in spring 2020. Seasonal adjustment only removes the regular within-year pattern. It doesn't change the trend or the business cycle.
+**2.7b.** The NSA series has a sharp spike every December, then a big drop in January and February. The SA series has none of these repeating spikes and runs smoothly through the middle of the NSA line. Over the long run, the two series follow the same path. Seasonal adjustment only remove the regular within-year pattern. It doesn't change the trend or the business cycle. 
 
 ```{r}
 #| label: gas-plot
@@ -174,7 +173,7 @@ retail_ts |>
   theme_minimal()
 ```
 
-**2.7d.** I added a dashed `geom_smooth()` (loess) trend line for each series to show the long-run path without the monthly wiggles, plus `scale_y_continuous(labels = scales::label_comma())` so the y-axis shows readable numbers like 600,000 instead of scientific notation.
+**2.7d.** I added a dashed `geom_smooth()` trend line for each series to show the long-run path without the monthly wiggles.
 
 ## Transformations
 
@@ -200,8 +199,7 @@ gas_swings <- can_gas |>
 gas_swings |> knitr::kable(digits = 2)
 ```
 
-**3.1a.** Only partly. From the 1960s through the 1980s, the seasonal swings get bigger as production rises: the average within-year range grows from about 1 billion m³ in the early 1960s to almost 4 billion m³ in the 1980s. That's the pattern that calls for logs. It doesn't hold over the whole sample, though. After about 1990, production keeps rising, but the swings get *smaller*, down to roughly 2 billion m³ after 1995. So the size of the swings changes over time in a way that isn't simply proportional to the level.
-
+**3.1a.** Only partly. From the 1960s through the 1980s, the seasonal swings get bigger as production rises: the average within-year range grows from about 1 billion to almost 4 billion. That's the pattern that calls for logs. It doesn't hold over the whole sample, though. After about 1990, production keeps rising, but the swings get *smaller*, down to roughly 2 billion m³ after 1995. 
 ```{r}
 #| label: gas-log
 # 3.1b
@@ -214,7 +212,7 @@ can_gas |>
   theme_minimal()
 ```
 
-**3.1b.** In logs, the trend becomes clearly concave. Growth is very fast in the early 1960s, slower afterward, and nearly flat after 2000. The seasonal swings now look *largest* at the start of the sample and shrink steadily, ending up very small after the mid-1990s (see the log column in the table above). So logs don't make the seasonal swings constant. They fix the growth in the swings from the 1960s to the 1980s but exaggerate the early swings, and neither scale handles the shrinking swings after 1990. I think logs are still a reasonable choice for can_gas, mainly because they turn the trend into percentage growth (which is easier to interpret), but they're not a clear win for stabilizing the seasonality. The real problem is that the seasonal pattern itself changes over time.
+**3.1b.** In logs, the trend becomes concave. Growth is very fast in the early 1960s, slower afterward, and nearly flat after 2000. The seasonal swings look *largest* at the start of the sample and shrink steadily. So logs don't make the seasonal swings constant. But they're not a clear win for stabilizing the seasonality. The  problem is that the seasonal pattern itself changes over time.
 
 ```{r}
 #| label: retail-log
@@ -234,7 +232,7 @@ retail_nsa |>
   theme_minimal()
 ```
 
-**3.1c.** The case for logging is **stronger** for retail sales than for can_gas. The series has grown about `r round(last(na.omit(retail_nsa$sales)) / first(na.omit(retail_nsa$sales)), 1)`-fold since `r format(min(retail_nsa$Month))`, and in levels the December spikes get visibly bigger in dollar terms as the series grows. That's exactly the pattern where seasonal effects are roughly a constant *percentage* of the level. After taking logs, the trend is close to a straight line and the seasonal swings are much more even in size across the sample.
+**3.1c.** The case for logging is **stronger** for retail sales than for can_gas. After taking the logs, the trend is close to a straight line and the seasonal swings are much more even in size across the sample.
 
 ### Growth rates (3.2)
 
@@ -508,7 +506,7 @@ eval_dates <- gas_cv_fc |>
   summarize(first = min(Month), last = max(Month), n = n() / 2)
 ```
 
-**5.1a.** The first training sample is January 1960 to December 1979 (240 months), so the **first forecast evaluated is for `r format(eval_dates$first)`**. The **last evaluated forecast is for `r format(eval_dates$last)`**, which gives `r eval_dates$n` one-step-ahead forecasts per model. The final training window also produces a forecast for March 2005, but there's no actual value to compare it with, so it isn't evaluated.
+**5.1a.** The first training sample is January 1960 to December 1979 (240 months), so the **first forecast evaluated is for `r format(eval_dates$first)`**. The **last evaluated forecast is for `r format(eval_dates$last)`**, which gives `r eval_dates$n` one-step-ahead forecasts per model. The final training window also produces a forecast for March 2005.
 
 | Model | MAE | RMSE |
 |---|---|---|
@@ -533,7 +531,7 @@ dm <- forecast::dm.test(errs$snaive, errs$tslm, h = 1, power = 1)
 dm
 ```
 
-**5.2a.** DM = `r round(dm$statistic, 2)`, p-value `r ifelse(dm$p.value < 2.2e-16, '< 2.2e-16', paste('=', signif(dm$p.value, 3)))`. We strongly reject the null that the two models are equally accurate under absolute-error loss. The negative statistic means the loss differential $d_t = |e^{\text{SNAIVE}}_t| - |e^{\text{TSLM}}_t|$ is negative on average, so the seasonal random walk's forecasts are significantly more accurate than the trend + seasonal dummies model's.
+**5.2a.** DM = `r round(dm$statistic, 2)`, p-value `r ifelse(dm$p.value < 2.2e-16, '< 2.2e-16', paste('=', signif(dm$p.value, 3)))`. So you should strongly reject the null that the two models are equally accurate under absolute-error loss.
 
 ### Rolling window (5.3)
 
@@ -557,8 +555,8 @@ bind_rows(
   knitr::kable(digits = 3)
 ```
 
-**5.3a.** With a rolling window, SNAIVE's accuracy doesn't change at all (MAE `r round(acc_rolling$MAE[acc_rolling$.model == "snaive"], 3)`, RMSE `r round(acc_rolling$RMSE[acc_rolling$.model == "snaive"], 3)`). Its forecast is just the value from 12 months earlier, so the length of the training window doesn't matter. The TSLM changes a lot: its MAE falls from `r round(acc_expanding$MAE[acc_expanding$.model == "tslm"], 2)` to `r round(acc_rolling$MAE[acc_rolling$.model == "tslm"], 2)` and its RMSE from `r round(acc_expanding$RMSE[acc_expanding$.model == "tslm"], 2)` to `r round(acc_rolling$RMSE[acc_rolling$.model == "tslm"], 2)`. As 4.4b showed, a single straight-line trend fits the S-shaped series badly. The expanding window keeps the steep 1960s growth in every training sample, which drags the trend slope away from recent growth. The rolling window drops those old observations, so the trend reflects the most recent 20 years. It still loses clearly to SNAIVE, though, because even a 20-year linear trend misses the plateau after 2000 and the changing seasonal pattern.
+**5.3a.** With a rolling window, SNAIVE's accuracy doesn't change at all. Its forecast is just the value from 12 months earlier. The TSLM changes a lot. its MAE falls from `r round(acc_expanding$MAE[acc_expanding$.model == "tslm"], 2)` to `r round(acc_rolling$MAE[acc_rolling$.model == "tslm"], 2)` and its RMSE from `r round(acc_expanding$RMSE[acc_expanding$.model == "tslm"], 2)` to `r round(acc_rolling$RMSE[acc_rolling$.model == "tslm"], 2)`. It still loses clearly to SNAIVE, though, because even a 20-year linear trend misses the plateau after 2000 and the changing seasonal pattern. 
 
 ## Reflection
 
-The residual check in 4.4c showed that the trend + seasonal dummies model leaves a lot of structure behind. The residuals are highly persistent, staying above or below zero for years at a time, and the ACF dies out very slowly. That means the level of the series drifts in ways a single straight line can't capture. The size of the seasonal swings also changes over time, which fixed dummies can't capture either. The forecast evaluation tells the same story: SNAIVE, which only uses what happened 12 months ago, beat the model by a wide margin, and the model improved a lot when it was only allowed to use recent data. Both results say that *recent observations* carry information this model ignores. I'd expect a better model to let the trend and seasonal pattern evolve over time and to use lagged values of the series (or of its errors), for example a model with autoregressive dynamics or a local level/trend that updates as new data arrive, rather than fixing everything from one regression on the whole sample.
+The residual check showed that the trend + seasonal dummies model leaves a lot behind. The residuals are very persistent, staying above or below zero for years at a time, and the ACF dies out very slowly. That means the level of the series drifts in ways a single straight line can't capture. The size of the seasonal swings also changes over time. The forecast evaluation tells us the same. SNAIVE, beat the model by a wide margin, and the model improved a lot when it was only allowed to use recent data. Both results say that *recent observations* carry information this model ignores. I'd expect a better model to let the trend and seasonal pattern evolve over time and to use lagged values of the series. 

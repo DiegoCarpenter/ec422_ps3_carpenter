@@ -318,9 +318,9 @@ can_gas_fit |>
   augment() |>
   features(.innov, ljung_box, lag = 24)
 
-# -----------------------------------------------------------------------------
+
 # Part 5 – A First Forecast Evaluation
-# -----------------------------------------------------------------------------
+
 
 # 5.1a Expanding-window TS-CV, 1-step-ahead forecasts
 gas_cv_fc <- can_gas |>
